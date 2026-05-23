@@ -34,6 +34,9 @@ Homepage = "https://github.com/verygoodplugins/whatsapp-mcp"
 Repository = "https://github.com/verygoodplugins/whatsapp-mcp"
 Issues = "https://github.com/verygoodplugins/whatsapp-mcp/issues"
 
+[project.scripts]
+whatsapp-mcp = "main:main"
+
 [tool.setuptools]
 py-modules = ["main", "whatsapp", "audio"]
 

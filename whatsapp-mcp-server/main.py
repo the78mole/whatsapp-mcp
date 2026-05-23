@@ -366,10 +366,14 @@ def shutdown_handler(signum, frame):
     sys.exit(0)
 
 
-if __name__ == "__main__":
+def main():
     # Register signal handlers for clean shutdown
     signal.signal(signal.SIGINT, shutdown_handler)
     signal.signal(signal.SIGTERM, shutdown_handler)
 
     # Initialize and run the server
     mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()

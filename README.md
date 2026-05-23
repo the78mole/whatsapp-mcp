@@ -34,7 +34,7 @@ A Model Context Protocol (MCP) server for WhatsApp, enabling Claude to read and 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/verygoodplugins/whatsapp-mcp.git
+   git clone https://github.com/the78mole/whatsapp-mcp.git
    cd whatsapp-mcp
    ```
 
@@ -70,6 +70,26 @@ A Model Context Protocol (MCP) server for WhatsApp, enabling Claude to read and 
    ```
 
    Replace `/path/to/whatsapp-mcp` with your actual path.
+
+   **Alternative: uvx without cloning**
+
+   If you don't want to clone the repository, you can use `uvx` to run the MCP
+   server directly from GitHub. The bridge still needs to run locally:
+
+   ```json
+   {
+     "mcpServers": {
+       "whatsapp": {
+         "command": "uvx",
+         "args": [
+           "--from",
+           "git+https://github.com/the78mole/whatsapp-mcp#subdirectory=whatsapp-mcp-server",
+           "whatsapp-mcp"
+         ]
+       }
+     }
+   }
+   ```
 
 4. **Restart Claude Desktop**
 
@@ -115,6 +135,29 @@ Add to your Cursor MCP settings (`~/.cursor/mcp.json`):
   }
 }
 ```
+
+### VS Code Configuration
+
+Add to your workspace's `.vscode/mcp.json` (or user-level `mcp.json`):
+
+```json
+{
+  "servers": {
+    "whatsapp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/the78mole/whatsapp-mcp#subdirectory=whatsapp-mcp-server",
+        "whatsapp-mcp"
+      ]
+    }
+  }
+}
+```
+
+This uses `uvx` to run the MCP server directly from GitHub — no local clone of
+the Python server required. The Go bridge still needs to run locally (see
+[Quick Start](#quick-start) step 2).
 
 ## Tools
 
