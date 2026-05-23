@@ -159,6 +159,73 @@ This uses `uvx` to run the MCP server directly from GitHub — no local clone of
 the Python server required. The Go bridge still needs to run locally (see
 [Quick Start](#quick-start) step 2).
 
+Include explicit DB paths and API URL so the MCP server finds the bridge
+regardless of where `uvx` caches the package:
+
+```json
+{
+  "servers": {
+    "whatsapp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/the78mole/whatsapp-mcp#subdirectory=whatsapp-mcp-server",
+        "whatsapp-mcp"
+      ],
+      "env": {
+        "WHATSAPP_DB_PATH": "/absolute/path/to/whatsapp-mcp/whatsapp-bridge/store/messages.db",
+        "WHATSMEOW_DB_PATH": "/absolute/path/to/whatsapp-mcp/whatsapp-bridge/store/whatsapp.db",
+        "WHATSAPP_API_URL": "http://localhost:18181/api"
+      }
+    }
+  }
+}
+```
+
+### Running the Bridge as a systemd Service (Linux)
+
+Instead of starting the bridge manually, you can run it as a persistent
+**systemd user service** that starts automatically when the network is
+available and restarts on failure.
+
+**1. Build the binary**
+
+```bash
+cd whatsapp-bridge
+go build -o ~/.local/bin/whatsapp-bridge .
+```
+
+**2. Install the service**
+
+A pre-built unit file is included at `whatsapp-bridge/whatsapp-bridge.service`:
+
+```bash
+cp whatsapp-bridge/whatsapp-bridge.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now whatsapp-bridge.service
+```
+
+The service uses port **18181** by default (`WHATSAPP_BRIDGE_PORT=18181`).
+Change the port in the unit file if needed.
+
+**3. Check status and logs**
+
+```bash
+systemctl --user status whatsapp-bridge
+journalctl --user -u whatsapp-bridge -f
+```
+
+**4. Update the binary after pulling changes**
+
+```bash
+cd whatsapp-bridge
+go build -o ~/.local/bin/whatsapp-bridge .
+systemctl --user restart whatsapp-bridge.service
+```
+
+> **Note:** The first start will re-use your existing WhatsApp session stored
+> in `whatsapp-bridge/store/whatsapp.db`. No new QR-code scan is needed.
+
 ## Tools
 
 Messages include `sender_display` showing "Name (phone)" format for easy identification by agents.

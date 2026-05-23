@@ -1,0 +1,26 @@
+[Unit]
+Description=WhatsApp MCP Bridge
+Documentation=https://github.com/the78mole/whatsapp-mcp
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/whatsapp-bridge
+WorkingDirectory=%h/GIT/TOOLS/whatsapp-mcp/whatsapp-bridge
+
+# Port (change to avoid conflicts with other services)
+Environment=WHATSAPP_BRIDGE_PORT=18181
+
+# Restart on failure, back off exponentially up to 5 minutes
+Restart=on-failure
+RestartSec=10
+RestartMaxDelaySec=300
+
+# Log to journal (use: journalctl --user -u whatsapp-bridge -f)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=whatsapp-bridge
+
+[Install]
+WantedBy=default.target
